@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Indicadores - Vanguard Transportes</title>
+
+    <!-- Anti-cache -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .indicadores-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .indicadores-container h2 {
+            text-align: center;
+            color: #1b5e20;
+            margin-bottom: 25px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .card h3 {
+            color: #1b5e20;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .card a {
+            display: inline-block;
+            padding: 10px 18px;
+            background-color: #1b5e20;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .card a:hover {
+            background-color: #145214;
+        }
+    </style>
+</head>
+<body>
+
+<header class="topo">
+    <div class="topo-esquerda">
+        <img src="assets/logo.png" alt="Logo">
+        <div>
+            <h1>VANGUARD TRANSPORTES</h1>
+            <p>Portal Interno – Central de Informações</p>
+        </div>
+    </div>
+</header>
+
+<nav class="menu">
+    <a href="index.html">Início</a>
+    <a href="funcionarios.html">Funcionários</a>
+    <a href="faturamento.html">Faturamento</a>
+    <a href="excesso_velocidade.html">Excesso de Velocidade</a>
+    <a href="tabela_preco.html">Tabela de Preço</a>
+    <a href="feriados.html">Feriados</a>
+    <a href="indicadores.html" class="ativo">Indicadores</a>
+    <a href="doc_veiculos.html">Doc_Veículos</a>
+    <a href="comunicados.html">Comunicados</a>
+</nav>
+
+<main class="conteudo">
+    <div class="indicadores-container">
+        <h2>Indicadores Operacionais</h2>
+
+        <div class="cards">
+
+            <!-- Combustível -->
+            <div class="card">
+                <h3>🚛 Combustível</h3>
+                <p>
+                    Indicadores relacionados ao consumo, média por veículo
+                    e controle de gastos com combustível.
+                </p>
+                <a href="#" onclick="alert('Arquivo de combustível ainda não definido')">
+                    Acessar indicadores
+                </a>
+            </div>
+
+            <!-- Manutenção -->
+            <div class="card">
+                <h3>🔧 Manutenção</h3>
+                <p>
+                    Indicadores de manutenção preventiva e corretiva,
+                    custos e acompanhamento da frota.
+                </p>
+                <a href="#" onclick="alert('Arquivo de manutenção ainda não definido')">
+                    Acessar indicadores
+                </a>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<footer class="rodape">
+    © 2026 <strong>Vanguard Transportes</strong> – Uso interno da empresa
+</footer>
+
+</body>
+</html>

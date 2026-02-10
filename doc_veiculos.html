@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Doc_Veículos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topo">
+    <div class="topo-esquerda">
+        <img src="assets/logo.png" alt="Logo Vanguard Transportes">
+        <div>
+            <h1>VANGUARD TRANSPORTES</h1>
+            <p>Portal Interno – Documentos de Veículos</p>
+        </div>
+    </div>
+</header>
+
+<nav class="menu">
+    <a href="index.html">Início</a>
+    <a href="funcionarios.html">Funcionários</a>
+    <a href="faturamento.html">Faturamento</a>
+    <a href="excesso_velocidade.html">Excesso de Velocidade</a> 
+    <a href="tabela_preco.html">Tabela de Preço</a> 
+    <a href="feriados.html">Feriados</a>
+    <a href="indicadores.html">Indicadores</a>
+    <a href="doc_veiculos.html" class="ativo">Doc.Veículos</a>
+    <a href="comunicados.html">Comunicados</a>
+</nav>
+
+<main class="conteudo">
+    <h2>Documentos dos Veículos</h2>
+
+    <label for="busca-placa">Buscar por Placa:</label>
+    <input type="text" id="busca-placa" placeholder="Digite a placa do veículo...">
+
+    <table id="tabela-veiculos">
+        <thead>
+            <tr>
+                <th>Placa</th>
+                <th>Documento</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- JS vai preencher aqui -->
+        </tbody>
+    </table>
+</main>
+
+
+<script src="js/doc_veiculos.js"></script>
+
+<footer class="rodape">
+    © 2026 <strong>Vanguard Transportes</strong> – Uso interno da empresa
+</footer>
+
+
+</body>
+</html>

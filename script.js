@@ -1,64 +1,131 @@
-const consumoBaseGasolina = 12;
-const consumoBaseEtanol = 8.5;
+let modoDetalhadoAtivo = true;
+
+const toggleTheme = document.getElementById("toggleTheme");
+const toggleModo = document.getElementById("toggleModo");
+const modoDetalhado = document.getElementById("modoDetalhado");
+const historicoDiv = document.getElementById("historico");
+const btnLimparHistorico = document.getElementById("limparHistorico");
+
+function carregarPreferencias() {
+  const tema = localStorage.getItem("tema");
+  const modo = localStorage.getItem("modo");
+
+  if (tema === "light") document.body.classList.add("light");
+
+  if (modo === "rapido") {
+    modoDetalhadoAtivo = false;
+    modoDetalhado.classList.add("hidden");
+    toggleModo.innerText = "🧠 Modo Completo";
+  }
+
+  carregarHistorico();
+}
+
+toggleTheme.onclick = () => {
+  document.body.classList.toggle("light");
+  localStorage.setItem("tema", document.body.classList.contains("light") ? "light" : "dark");
+};
+
+toggleModo.onclick = () => {
+  modoDetalhadoAtivo = !modoDetalhadoAtivo;
+  modoDetalhado.classList.toggle("hidden");
+
+  toggleModo.innerText = modoDetalhadoAtivo ? "⚡ Modo Rápido" : "🧠 Modo Completo";
+  localStorage.setItem("modo", modoDetalhadoAtivo ? "completo" : "rapido");
+};
+
+btnLimparHistorico.onclick = () => {
+  if (confirm("Deseja realmente apagar todo o histórico?")) {
+    localStorage.removeItem("historicoRodamais");
+    carregarHistorico();
+  }
+};
 
 function calcular() {
-  const valor = parseFloat(document.getElementById("valor").value);
-  const precoGasolina = parseFloat(document.getElementById("precoGasolina").value);
-  const precoEtanol = parseFloat(document.getElementById("precoEtanol").value);
-  const kmViagem = parseFloat(document.getElementById("kmViagem").value);
-  const diasMes = parseInt(document.getElementById("diasMes").value);
-  const perfil = parseFloat(document.getElementById("perfilCarro").value);
-  const modo = parseFloat(document.getElementById("modoConducao").value);
+  const valor = Number(document.getElementById("valor").value);
+  const precoGas = Number(document.getElementById("precoGasolina").value);
+  const precoEta = Number(document.getElementById("precoEtanol").value);
 
-  if (!valor || !precoGasolina || !precoEtanol || !kmViagem || !diasMes) {
-    alert("Preencha todos os campos.");
+  if (!valor || !precoGas || !precoEta) {
+    alert("Preencha os valores principais!");
     return;
   }
 
-  const consumoGasolina = consumoBaseGasolina * perfil * modo;
-  const consumoEtanol = consumoBaseEtanol * perfil * modo;
+  let consumoGasBase = 12;
+  let consumoEtaBase = 8.5;
 
-  const litrosGasolina = valor / precoGasolina;
-  const litrosEtanol = valor / precoEtanol;
+  let consumoGas = consumoGasBase;
+  let consumoEta = consumoEtaBase;
 
-  const kmGasolina = litrosGasolina * consumoGasolina;
-  const kmEtanol = litrosEtanol * consumoEtanol;
+  let kmViagem = 0;
+  let diasMes = 0;
 
-  const custoViagemGasolina = (kmViagem / consumoGasolina) * precoGasolina;
-  const custoViagemEtanol = (kmViagem / consumoEtanol) * precoEtanol;
+  if (modoDetalhadoAtivo) {
+    const perfil = Number(document.getElementById("perfilCarro").value);
+    const modo = Number(document.getElementById("modoConducao").value);
 
-  const mensalGasolina = custoViagemGasolina * diasMes;
-  const mensalEtanol = custoViagemEtanol * diasMes;
+    consumoGas *= perfil * modo;
+    consumoEta *= perfil * modo;
 
-  const melhor = mensalGasolina < mensalEtanol ? "⛽ Gasolina é mais vantajosa!" : "🌱 Etanol é mais vantajoso!";
-  const economia = Math.abs(mensalGasolina - mensalEtanol).toFixed(2);
+    kmViagem = Number(document.getElementById("kmViagem").value || 0);
+    diasMes = Number(document.getElementById("diasMes").value || 0);
+  }
 
-  const resultado = `
-✔ Com R$ ${valor.toFixed(2)}, você roda aproximadamente:
-⛽ Gasolina: ${kmGasolina.toFixed(1)} km
-🌱 Etanol: ${kmEtanol.toFixed(1)} km
+  const litrosGas = valor / precoGas;
+  const litrosEta = valor / precoEta;
 
-✔ Gasto por viagem (Gasolina): R$ ${custoViagemGasolina.toFixed(2)}
-✔ Gasto por viagem (Etanol): R$ ${custoViagemEtanol.toFixed(2)}
+  const kmGas = litrosGas * consumoGas;
+  const kmEta = litrosEta * consumoEta;
 
-✔ Gasto mensal (Gasolina): R$ ${mensalGasolina.toFixed(2)}
-✔ Gasto mensal (Etanol): R$ ${mensalEtanol.toFixed(2)}
+  let texto = `✔ Com R$ ${valor.toFixed(2)}, você roda aproximadamente:\n`;
+  texto += `⛽ Gasolina: ${kmGas.toFixed(1)} km\n`;
+  texto += `🌱 Etanol: ${kmEta.toFixed(1)} km\n\n`;
 
-${melhor}
-💰 Economia mensal aproximada: R$ ${economia}
+  if (modoDetalhadoAtivo && kmViagem > 0 && diasMes > 0) {
+    const custoKmGas = precoGas / consumoGas;
+    const custoKmEta = precoEta / consumoEta;
 
-ℹ Cálculo baseado em consumo médio: Gasolina ${consumoGasolina.toFixed(1)} km/l, Etanol ${consumoEtanol.toFixed(1)} km/l.
-`;
+    const gastoViagemGas = kmViagem * custoKmGas;
+    const gastoViagemEta = kmViagem * custoKmEta;
 
-  document.getElementById("resultado").innerText = resultado;
-  salvarHistorico(resultado);
+    const kmMes = kmViagem * diasMes;
+
+    const gastoMesGas = kmMes * custoKmGas;
+    const gastoMesEta = kmMes * custoKmEta;
+
+    texto += `✔ Gasto por viagem (Gasolina): R$ ${gastoViagemGas.toFixed(2)}\n`;
+    texto += `✔ Gasto por viagem (Etanol): R$ ${gastoViagemEta.toFixed(2)}\n\n`;
+
+    texto += `✔ Gasto mensal (Gasolina): R$ ${gastoMesGas.toFixed(2)}\n`;
+    texto += `✔ Gasto mensal (Etanol): R$ ${gastoMesEta.toFixed(2)}\n\n`;
+
+    const economia = Math.abs(gastoMesGas - gastoMesEta).toFixed(2);
+    const melhorMes = gastoMesGas < gastoMesEta ? "⛽ Gasolina é mais vantajosa!" : "🌱 Etanol é mais vantajoso!";
+
+    texto += `${melhorMes}\n`;
+    texto += `💰 Economia mensal aproximada: R$ ${economia}\n\n`;
+
+    texto += `ℹ Cálculo baseado em consumo médio: Gasolina ${consumoGas.toFixed(1)} km/l, Etanol ${consumoEta.toFixed(1)} km/l.`;
+  } else {
+    const melhor = kmGas > kmEta ? "⛽ Gasolina é mais vantajosa!" : "🌱 Etanol é mais vantajoso!";
+    texto += melhor;
+  }
+
+  document.getElementById("resultado").innerText = texto;
+  salvarHistorico(texto);
 }
 
 function salvarHistorico(texto) {
-  const historico = document.getElementById("historico");
-  const item = document.createElement("div");
-  item.style.borderTop = "1px solid #1e293b";
-  item.style.paddingTop = "10px";
-  item.innerText = texto;
-  historico.prepend(item);
+  let hist = JSON.parse(localStorage.getItem("historicoRodamais") || "[]");
+  hist.unshift({ data: new Date().toLocaleString(), texto });
+  hist = hist.slice(0, 20);
+  localStorage.setItem("historicoRodamais", JSON.stringify(hist));
+  carregarHistorico();
 }
+
+function carregarHistorico() {
+  const hist = JSON.parse(localStorage.getItem("historicoRodamais") || "[]");
+  historicoDiv.innerText = hist.map(h => `📅 ${h.data}\n${h.texto}\n\n`).join("");
+}
+
+carregarPreferencias();

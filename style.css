@@ -1,0 +1,97 @@
+:root {
+  --bg: #0f172a;
+  --card: #020617;
+  --text: #e5e7eb;
+  --primary: #22c55e;
+  --headerText: #052e16;
+}
+
+body.light {
+  --bg: #f8fafc;
+  --card: #e5e7eb;
+  --text: #020617;
+  --primary: #16a34a;
+  --headerText: #052e16;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+}
+
+header {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  color: var(--headerText);
+  padding: 20px;
+  text-align: center;
+}
+
+.slogan {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.top-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  margin-top: 15px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: #052e16;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+#resultado, #historico {
+  background: var(--card);
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 20px;
+  white-space: pre-line;
+}
+
+footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+#modoDetalhado.hidden {
+  display: none;
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>RodaMais - Economize em cada viagem</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark">
+
+<header>
+  <h1>🚗 RodaMais</h1>
+  <p class="slogan">Economize em cada viagem</p>
+
+  <div class="top-actions">
+    <button id="toggleTheme">🌗 Tema</button>
+    <button id="toggleModo">⚡ Modo Rápido</button>
+  </div>
+</header>
+
+<main class="container">
+  <h2>⛽ Simulador de Combustível</h2>
+
+  <label>💰 Valor para abastecer (R$)</label>
+  <input type="number" id="valor" placeholder="Ex: 150" />
+
+  <label>⛽ Preço da Gasolina (R$/L)</label>
+  <input type="number" id="precoGasolina" placeholder="Ex: 5.84" />
+
+  <label>🌱 Preço do Etanol (R$/L)</label>
+  <input type="number" id="precoEtanol" placeholder="Ex: 4.20" />
+
+  <div id="modoDetalhado">
+    <label>🚗 Km por viagem</label>
+    <input type="number" id="kmViagem" placeholder="Ex: 60" />
+
+    <label>📆 Dias que dirige por mês</label>
+    <input type="number" id="diasMes" placeholder="Ex: 30" />
+
+    <label>🚙 Perfil do carro</label>
+    <select id="perfilCarro">
+      <option value="1">Leve</option>
+      <option value="0.9">Médio</option>
+      <option value="0.8">Pesado</option>
+    </select>
+
+    <label>⚙️ Modo de condução</label>
+    <select id="modoConducao">
+      <option value="1.1">Econômico</option>
+      <option value="1">Normal</option>
+      <option value="0.9">Agressivo</option>
+    </select>
+  </div>
+
+  <button onclick="calcular()">🔥 Calcular</button>
+
+  <div id="resultado"></div>
+
+  <h3>📜 Histórico</h3>
+  <button id="limparHistorico">🧹 Limpar histórico</button>
+  <div id="historico"></div>
+</main>
+
+<footer>
+  <p>RodaMais © 2026 - Comparador inteligente de combustível</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

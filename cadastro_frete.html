@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cadastrar Frete - Conecta Frete</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(to bottom,#1e3c72,#2a5298);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+background:white;
+width:90%;
+max-width:260px;
+padding:35px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+h1{
+text-align:center;
+color:#2a5298;
+margin-bottom:20px;
+}
+
+input,textarea,select{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+button{
+width:100%;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#2a5298;
+color:white;
+font-size:15px;
+cursor:pointer;
+margin-top:5px;
+}
+
+button:hover{
+background:#1e3c72;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Novo Frete 🚛</h1>
+
+<input type="text" id="origem" placeholder="Cidade de Carregamento">
+
+<input type="text" id="destino" placeholder="Cidade de Entrega">
+
+<input type="text" id="empresaCarga" placeholder="Empresa que vai carregar">
+
+
+<select id="caminhao" required>
+
+<option value="">Selecione</option>
+<option value="Truck">Truck</option>
+<option value="Bitruck">Bitruck</option>
+<option value="Carreta">Carreta</option>
+<option value="Bitrem">Bitrem</option>
+<option value="Rodotrem">Rodotrem</option>
+
+</select>
+
+<input type="text" id="tipoCarga" placeholder="Tipo de Carga">
+
+<input type="number" id="valorTon" placeholder="Valor por Tonelada" oninput="calcularTotal()">
+
+<input type="number" id="quantidade" placeholder="Quantidade (toneladas)" oninput="calcularTotal()">
+
+<input type="text" id="valorTotal" placeholder="Valor Total do Frete" readonly>
+
+<input type="date" id="data">
+
+<textarea id="observacao" placeholder="Observações"></textarea>
+
+<button onclick="salvarFrete()">
+Salvar Frete
+</button>
+
+<button onclick="voltar()">
+Voltar
+</button>
+
+</div>
+
+<script>
+
+function calcularTotal(){
+
+let valorTon = document.getElementById("valorTon").value;
+let quantidade = document.getElementById("quantidade").value;
+
+let total = valorTon * quantidade;
+
+if(!total){
+total = 0;
+}
+
+document.getElementById("valorTotal").value = total.toFixed(2);
+
+}
+
+function salvarFrete(){
+
+let origem = document.getElementById("origem").value;
+let destino = document.getElementById("destino").value;
+let empresaCarga = document.getElementById("empresaCarga").value;
+let tipoCaminhao = document.getElementById("tipoCaminhao").value;
+let tipoCarga = document.getElementById("tipoCarga").value;
+let valorTon = document.getElementById("valorTon").value;
+let quantidade = document.getElementById("quantidade").value;
+let valorTotal = document.getElementById("valorTotal").value;
+let data = document.getElementById("data").value;
+let observacao = document.getElementById("observacao").value;
+
+if(valorTotal == 0){
+
+alert("Preencha os valores do frete");
+return;
+
+}
+
+let login = localStorage.getItem("usuarioLogado");
+let empresa = JSON.parse(localStorage.getItem(login));
+
+let nomeEmpresa = empresa.nome || empresa.nomeEmpresa;
+
+let fretes = JSON.parse(localStorage.getItem("fretes")) || [];
+
+fretes.push({
+
+origem,
+destino,
+empresaCarga,
+tipoCaminhao,
+tipoCarga,
+valorTon,
+quantidade,
+valorTotal,
+data,
+observacao,
+nomeEmpresa,
+telefoneEmpresa: empresa.telefone
+
+});
+
+localStorage.setItem("fretes", JSON.stringify(fretes));
+
+alert("Frete cadastrado com sucesso!");
+
+window.location.href="painel_empresa.html";
+
+}
+
+function voltar(){
+
+window.location.href="painel_empresa.html";
+
+}
+
+</script>
+
+</body>
+</html>

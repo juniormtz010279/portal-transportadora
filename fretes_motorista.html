@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Fretes Disponíveis - Conecta Frete</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(to bottom,#1e3c72,#2a5298);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+background:white;
+width:90%;
+max-width:420px;
+border-radius:20px;
+padding:25px;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+h1{
+text-align:center;
+color:#2a5298;
+margin-bottom:20px;
+}
+
+.frete{
+border:1px solid #ddd;
+border-radius:12px;
+padding:12px;
+margin-bottom:12px;
+font-size:14px;
+background:#f7f7f7;
+}
+
+.rota{
+font-weight:bold;
+color:#2a5298;
+margin-bottom:5px;
+}
+
+button{
+width:100%;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#2a5298;
+color:white;
+font-size:14px;
+cursor:pointer;
+margin-top:8px;
+}
+
+button:hover{
+background:#1e3c72;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Fretes Disponíveis 🚛</h1>
+
+<div id="listaFretes"></div>
+
+<button onclick="voltar()">
+Voltar
+</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyC5iPsX34H7evZiDwTm9CUnl0CRA6iLnpQ",
+authDomain: "conecta-frete-53e03.firebaseapp.com",
+projectId: "conecta-frete-53e03",
+storageBucket: "conecta-frete-53e03.firebasestorage.app",
+messagingSenderId: "558425558991",
+appId: "1:558425558991:web:89069fccbd3b3cf3884cba"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let lista = document.getElementById("listaFretes");
+
+async function carregarFretes(){
+
+lista.innerHTML = "Carregando fretes...";
+
+const querySnapshot = await getDocs(collection(db, "fretes"));
+
+lista.innerHTML = "";
+
+if(querySnapshot.empty){
+
+lista.innerHTML = "<p>Nenhum frete disponível</p>";
+return;
+
+}
+
+querySnapshot.forEach((doc)=>{
+
+let frete = doc.data();
+
+lista.innerHTML += `
+
+<div class="frete">
+
+<div class="rota">
+${frete.origem} → ${frete.destino}
+</div>
+
+<b>Empresa:</b> ${frete.nomeEmpresa || "-"}<br>
+
+<b>Empresa de carregamento:</b> ${frete.empresaCarga || "-"}<br>
+
+🚚 Caminhão: ${frete.tipoCaminhao || "-"}<br>
+
+Carga: ${frete.tipoCarga}<br>
+Quantidade: ${frete.quantidade} toneladas<br>
+Valor por ton: ${formatarDinheiro(frete.valorTon)}<br>
+Valor total: ${formatarDinheiro(frete.valorTotal)}<br>
+Data: ${formatarData(frete.data)}<br>
+Obs: ${frete.observacao || "-"}
+
+<button onclick="interesse('${frete.telefoneEmpresa}','${frete.origem}','${frete.destino}','${frete.nomeEmpresa}','${frete.empresaCarga}','${frete.tipoCaminhao}','${frete.tipoCarga}','${frete.quantidade}','${frete.valorTotal}','${frete.data}')">
+Tenho Interesse
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+window.interesse = function(telefone,origem,destino,empresa,empresaCarga,caminhao,carga,quantidade,valor,data){
+
+telefone = telefone.replace(/\D/g,'');
+
+let mensagem = `Olá, tenho interesse neste frete:
+
+🚛 ${origem} → ${destino}
+Empresa: ${empresa}
+Empresa de carregamento: ${empresaCarga}
+Caminhão: ${caminhao}
+Carga: ${carga}
+Quantidade: ${quantidade} toneladas
+Valor total: ${valor}
+Data: ${data}
+`;
+
+let url = "https://wa.me/55"+telefone+"?text="+encodeURIComponent(mensagem);
+
+window.open(url,"_blank");
+
+}
+
+window.voltar = function(){
+
+window.location.href="painel_motorista.html";
+
+}
+
+function formatarData(data){
+
+let partes = data.split("-");
+
+return partes[2] + "-" + partes[1] + "-" + partes[0];
+
+}
+
+function formatarDinheiro(valor){
+
+return Number(valor).toLocaleString("pt-BR",{
+style:"currency",
+currency:"BRL"
+});
+
+}
+
+carregarFretes();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Editar Frete - Conecta Frete</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(to bottom,#1e3c72,#2a5298);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+background:white;
+width:90%;
+max-width:400px;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+h1{
+text-align:center;
+color:#2a5298;
+margin-bottom:20px;
+}
+
+input,textarea,select{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#2a5298;
+color:white;
+cursor:pointer;
+margin-top:5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>Editar Frete</h1>
+
+<input type="text" id="origem" placeholder="Origem">
+<input type="text" id="destino" placeholder="Destino">
+<input type="text" id="empresaCarga" placeholder="Empresa da carga">
+
+<select id="editarCaminhao">
+<option value="Truck">Truck</option>
+<option value="Bitruck">Bitruck</option>
+<option value="Carreta">Carreta</option>
+<option value="Bitrem">Bitrem</option>
+<option value="Rodotrem">Rodotrem</option>
+</select>
+
+<input type="text" id="tipoCarga" placeholder="Tipo de carga">
+
+<input type="number" id="valorTon" placeholder="Valor por tonelada">
+<input type="number" id="quantidade" placeholder="Quantidade (ton)">
+
+<input type="text" id="valorTotal" placeholder="Valor total" readonly>
+
+<input type="date" id="data">
+
+<textarea id="observacao" placeholder="Observação"></textarea>
+
+<button onclick="salvarEdicao()">Salvar Alterações</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { 
+getFirestore,
+doc,
+getDoc,
+updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// CONFIG FIREBASE
+const firebaseConfig = {
+apiKey: "AIzaSyC5iPsX34H7evZiDwTm9CUnl0CRA6iLnpQ",
+authDomain: "conecta-frete-53e03.firebaseapp.com",
+projectId: "conecta-frete-53e03",
+storageBucket: "conecta-frete-53e03.appspot.com",
+messagingSenderId: "558425558991",
+appId: "1:558425558991:web:89069fccbd3b3cf3884cba"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// PEGAR ID DO FRETE
+const id = localStorage.getItem("freteEditando");
+
+// 🔹 CALCULAR TOTAL AUTOMATICAMENTE
+function calcularTotal(){
+  let valorTon = Number(document.getElementById("valorTon").value) || 0;
+  let quantidade = Number(document.getElementById("quantidade").value) || 0;
+
+  let total = valorTon * quantidade;
+
+  document.getElementById("valorTotal").value = total.toFixed(2);
+}
+
+// ATIVAR AO DIGITAR
+document.getElementById("valorTon").addEventListener("input", calcularTotal);
+document.getElementById("quantidade").addEventListener("input", calcularTotal);
+
+// 🔹 CARREGAR FRETE
+async function carregarFrete(){
+
+const docRef = doc(db, "fretes", id);
+const docSnap = await getDoc(docRef);
+
+if(docSnap.exists()){
+
+let frete = docSnap.data();
+
+document.getElementById("origem").value = frete.origem || "";
+document.getElementById("destino").value = frete.destino || "";
+document.getElementById("empresaCarga").value = frete.empresaCarga || "";
+document.getElementById("editarCaminhao").value = frete.tipoCaminhao || "";
+document.getElementById("tipoCarga").value = frete.tipoCarga || "";
+document.getElementById("valorTon").value = frete.valorTon || "";
+document.getElementById("quantidade").value = frete.quantidade || "";
+document.getElementById("valorTotal").value = frete.valorTotal || "";
+document.getElementById("data").value = frete.data || "";
+document.getElementById("observacao").value = frete.observacao || "";
+
+}else{
+
+alert("Frete não encontrado!");
+window.location.href = "fretes_empresa.html";
+
+}
+
+}
+
+// 🔹 SALVAR EDIÇÃO
+window.salvarEdicao = async function(){
+
+const docRef = doc(db, "fretes", id);
+
+await updateDoc(docRef, {
+
+origem:document.getElementById("origem").value,
+destino:document.getElementById("destino").value,
+empresaCarga:document.getElementById("empresaCarga").value,
+tipoCaminhao:document.getElementById("editarCaminhao").value,
+tipoCarga:document.getElementById("tipoCarga").value,
+valorTon:document.getElementById("valorTon").value,
+quantidade:document.getElementById("quantidade").value,
+valorTotal:document.getElementById("valorTotal").value,
+data:document.getElementById("data").value,
+observacao:document.getElementById("observacao").value
+
+});
+
+alert("Frete atualizado com sucesso!");
+
+window.location.href = "fretes_empresa.html";
+
+}
+
+// INICIAR
+carregarFrete();
+
+</script>
+
+</body>
+</html>

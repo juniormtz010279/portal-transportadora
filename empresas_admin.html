@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Empresas</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f5f5f5;
+}
+
+.container{
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+    color:#2a5298;
+}
+
+/* 🔥 CARD */
+.card{
+    background:white;
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+.info{
+    margin:5px 0;
+    font-size:14px;
+}
+
+.label{
+    font-weight:bold;
+}
+
+/* 🔥 BOTÃO VOLTAR PADRÃO */
+.botao-voltar{
+    display:flex;
+    justify-content:center;
+    margin:20px 0;
+}
+
+.botao-voltar button{
+    width:70%;
+    max-width:300px;
+    padding:12px;
+    background:#2a5298;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.botao-voltar button:hover{
+    background:#1e3c72;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Empresas Cadastradas 🏢</h1>
+
+<div id="listaEmpresas">Carregando...</div>
+
+</div>
+
+<!-- 🔥 BOTÃO VOLTAR -->
+<div class="botao-voltar">
+    <button onclick="voltar()">Voltar</button>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { 
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔥 CONFIG (usa a mesma do sistema)
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "conecta-frete-53e03.firebaseapp.com",
+  projectId: "conecta-frete-53e03",
+  storageBucket: "conecta-frete-53e03.appspot.com",
+  messagingSenderId: "558425558991",
+  appId: "1:558425558991:web:89069fccbd3b3cf3884cba"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔥 BUSCAR EMPRESAS
+async function carregarEmpresas(){
+
+    const querySnapshot = await getDocs(collection(db, "empresas"));
+
+    let div = document.getElementById("listaEmpresas");
+
+    if(querySnapshot.empty){
+        div.innerHTML = "Nenhuma empresa cadastrada.";
+        return;
+    }
+
+    div.innerHTML = "";
+
+    querySnapshot.forEach(doc => {
+
+        let e = doc.data();
+
+        div.innerHTML += `
+        <div class="card">
+            <div class="info"><span class="label">Empresa:</span> ${e.nomeEmpresa || ""}</div>
+            <div class="info"><span class="label">CNPJ:</span> ${e.cnpj || ""}</div>
+            <div class="info"><span class="label">Telefone:</span> ${e.telefone || ""}</div>
+            <div class="info"><span class="label">WhatsApp:</span> ${e.whatsapp || ""}</div>
+            <div class="info"><span class="label">Endereço:</span> ${e.endereco || ""}</div>
+            <div class="info"><span class="label">Login:</span> ${e.login || ""}</div>
+            <div class="info"><span class="label">Tipo:</span> ${e.tipo || ""}</div>
+        </div>
+        `;
+    });
+
+}
+
+carregarEmpresas();
+
+</script>
+
+<script>
+function voltar(){
+    window.location.href = "admin_painel.html";
+}
+</script>
+
+</body>
+</html>

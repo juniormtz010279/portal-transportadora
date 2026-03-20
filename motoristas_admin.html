@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Motoristas Cadastrados</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:#f4f4f4;
+  padding:20px;
+}
+
+.container{
+  max-width:600px;
+  margin:auto;
+}
+
+h1{
+  text-align:center;
+  color:#2a5298;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:10px;
+  box-shadow:0 5px 10px rgba(0,0,0,0.1);
+}
+
+/* 🔥 BOTÃO VOLTAR CENTRALIZADO */
+.botao-voltar{
+  text-align:center;
+  margin-top:20px;
+}
+
+.botao-voltar button{
+  padding:10px 20px;
+  background:#2a5298;
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.botao-voltar button:hover{
+  background:#1e3c72;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Motoristas 🚛</h1>
+
+<div id="lista">Carregando...</div>
+
+<!-- 🔙 BOTÃO VOLTAR -->
+<div class="botao-voltar">
+  <button onclick="voltar()">Voltar</button>
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔥 CONFIG FIREBASE (usa o mesmo do sistema)
+const firebaseConfig = {
+  apiKey: "SUA_API",
+  authDomain: "SEU_DOMINIO",
+  projectId: "conecta-frete-53e03",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const div = document.getElementById("lista");
+
+async function carregar(){
+
+  const snapshot = await getDocs(collection(db,"motoristas"));
+
+  if(snapshot.empty){
+    div.innerHTML = "Nenhum motorista cadastrado.";
+    return;
+  }
+
+  div.innerHTML = "";
+
+  snapshot.forEach(doc => {
+
+    let m = doc.data();
+
+    div.innerHTML += `
+    <div class="card">
+      <b>${m.nome}</b><br>
+      📞 ${m.telefone}<br>
+      📍 ${m.cidade}<br>
+      🌎 ${m.regiao}<br>
+      🚛 ${m.caminhao}<br>
+      ⚖ ${m.capacidade} ton<br><br>
+
+      🔑 <b>Login:</b> ${m.login}<br>
+      🔒 <b>Senha:</b> ${m.senha}
+    </div>
+    `;
+  });
+}
+
+carregar();
+
+</script>
+
+<script>
+function voltar(){
+  window.location.href = "admin_painel.html";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "Captação de Motoristas",
+  "short_name": "Capta Motorista",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2e7d32",
+  "icons": []
+}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro Motorista - Conecta Frete</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #1e3c72, #2a5298);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 30px 0;
+}
+
+.container {
+    background: white;
+    width: 90%;
+    max-width: 280px;
+    border-radius: 25px;
+    padding: 35px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: #2a5298;
+    margin-bottom: 5px;
+}
+
+.subtitulo {
+    font-size: 14px;
+    color: gray;
+    margin-bottom: 20px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #2a5298;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #1e3c72;
+}
+
+.voltar {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.voltar a {
+    color: #2a5298;
+    text-decoration: none;
+    font-weight: bold;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Conecta Frete</h1>
+    <div class="subtitulo">
+        Cadastro de Motorista 🚛
+    </div>
+
+    <input type="text" id="nome" placeholder="Nome do Motorista">
+    <input type="text" id="telefone" placeholder="Telefone / WhatsApp" maxlength="15" oninput="formatarTelefone(this)">
+    <input type="text" id="cidade" placeholder="Cidade / Estado">
+    <input type="text" id="regiao" placeholder="Região que atende (Ex: MG / ES)">
+
+    <select id="caminhao">
+        <option value="">Tipo de Caminhão</option>
+        <option>Truck</option>
+        <option>Carreta</option>
+        <option>LS</option>
+        <option>Bitrem</option>
+        <option>Bitruck</option>
+    </select>
+
+    <input type="number" id="capacidade" placeholder="Capacidade (toneladas)">
+    <input type="text" id="login" placeholder="Criar Login">
+    <input type="password" id="senha" placeholder="Criar Senha">
+
+    <button onclick="cadastrar()">Cadastrar</button>
+
+    <div class="voltar">
+        <a href="cadastro.html">Voltar</a>
+    </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { 
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// CONFIG FIREBASE
+const firebaseConfig = {
+apiKey: "AIzaSyC5iPsX34H7evZiDwTm9CUnl0CRA6iLnpQ",
+authDomain: "conecta-frete-53e03.firebaseapp.com",
+projectId: "conecta-frete-53e03",
+storageBucket: "conecta-frete-53e03.appspot.com",
+messagingSenderId: "558425558991",
+appId: "1:558425558991:web:89069fccbd3b3cf3884cba"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔹 FORMATAR TELEFONE (mantido)
+window.formatarTelefone = function(campo){
+
+    let valor = campo.value.replace(/\D/g, "");
+
+    if(valor.length > 11){
+        valor = valor.slice(0,11);
+    }
+
+    if(valor.length > 0){
+        valor = "(" + valor;
+    }
+
+    if(valor.length > 2){
+        valor = valor.slice(0,3) + ") " + valor.slice(3);
+    }
+
+    if(valor.length > 10){
+        valor = valor.slice(0,10) + "-" + valor.slice(10);
+    }
+
+    campo.value = valor;
+}
+
+// 🔹 CADASTRAR MOTORISTA
+window.cadastrar = async function(){
+
+    let motorista = {
+        tipo: "motorista",
+        nome: document.getElementById("nome").value,
+        telefone: document.getElementById("telefone").value,
+        cidade: document.getElementById("cidade").value,
+        regiao: document.getElementById("regiao").value,
+        caminhao: document.getElementById("caminhao").value,
+        capacidade: document.getElementById("capacidade").value,
+        login: document.getElementById("login").value,
+        senha: document.getElementById("senha").value
+    };
+
+    if(motorista.nome === "" || motorista.login === "" || motorista.senha === ""){
+        alert("Preencha os campos obrigatórios!");
+        return;
+    }
+
+    // 🔥 VERIFICAR SE LOGIN JÁ EXISTE NO FIRESTORE
+    const q = query(
+        collection(db, "motoristas"),
+        where("login", "==", motorista.login)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    if(!querySnapshot.empty){
+        alert("Este login já está em uso. Escolha outro.");
+        return;
+    }
+
+    // 🔥 SALVAR NO FIRESTORE
+    await addDoc(collection(db, "motoristas"), motorista);
+
+    alert("Cadastro realizado com sucesso! 🚛");
+
+    window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>
